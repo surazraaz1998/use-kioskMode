@@ -1,0 +1,31 @@
+{
+  "name": "use-kioskmode",
+  "version": "1.0.0",
+  "description": "A npm package to implement kiosk mode in a web app.",
+  "main": "useKioskMode.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surazraaz1998/use-kioskMode.git"
+  },
+  "keywords": [
+    "kiosk",
+    "mode",
+    "fullscreen",
+    "exitfullscreen",
+    "ipad",
+    "andriod"
+  ],
+  "author": "Suraj Raj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/surazraaz1998/use-kioskMode/issues"
+  },
+  "homepage": "https://github.com/surazraaz1998/use-kioskMode#readme",
+  "peerDependencies": {
+    "react": "^18.3.1"
+  }
+}
