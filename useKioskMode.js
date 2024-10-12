@@ -1,34 +1,18 @@
-import React, { useEffect, useState } from "react";
+/**
+ * useKioskMode hook
+ *
+ * This hook provides a way to enter and exit kiosk mode on a webpage.
+ * It uses the fullscreen API to enter fullscreen mode and listens for
+ * the fullscreenchange event to exit fullscreen mode.
+ *
+ * @returns {object} An object with the following properties:
+ *   - isKioskMode: A boolean indicating whether the webpage is in kiosk mode.
+ *   - toggleKioskMode: A function to Toggle kiosk mode.
+ *   - modalProps: An object with properties for the modal dialog.
+ */
 
-const enterFullscreen = (element) => {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.webkitRequestFullscreen) {
-    // Safari
-    element.webkitRequestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    // Firefox
-    element.mozRequestFullScreen();
-  } else if (element.msRequestFullscreen) {
-    // IE/Edge
-    element.msRequestFullscreen();
-  }
-};
+import { useEffect, useState } from "react";
 
-const exitFullscreen = () => {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.webkitExitFullscreen) {
-    // Safari
-    document.webkitExitFullscreen();
-  } else if (document.mozCancelFullScreen) {
-    // Firefox
-    document.mozCancelFullScreen();
-  } else if (document.msExitFullscreen) {
-    // IE/Edge
-    document.msExitFullscreen();
-  }
-};
 const useKioskMode = () => {
   const [clickCount, setClickCount] = useState(0);
   const [clickTimer, setClickTimer] = useState(null);
@@ -37,80 +21,136 @@ const useKioskMode = () => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    window.addEventListener("click", handleEvent);
-    window.addEventListener("touchstart", handleEvent);
-    return () => {
-      window.removeEventListener("click", handleEvent);
-      window.removeEventListener("touchstart", handleEvent);
-    };
-  }, [clickCount, clickTimer, isKioskMode]);
+  /**
+   * Handle event listener for fullscreenchange event
+   */
+  const handleFullscreenChange = () => {
+    if (document.fullscreenElement === null) {
+      setIsKioskMode(false);
+    }
+  };
 
-  function handleEvent(e) {
-    console.log("inside handleEvent");
-    const isTouch =
-      e.type === "touchstart" ||
-      e.type === "touchmove" ||
-      e.type === "touchend";
+  /**
+   * Handle event listener for click and touchstart events
+   */
+  const handleEvent = (e) => {
+    const isTouch = e.type === "touchstart" || e.type === "touchmove" || e.type === "touchend";
     const event = isTouch ? e.touches[0] : e;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     const cornerWidth = 300;
     const cornerHeight = 300;
 
-    if (
-      event.clientX > windowWidth - cornerWidth &&
-      event.clientY > windowHeight - cornerHeight
-    ) {
-      setClickCount((prev) => prev + 1);
-      if (clickTimer) {
-        clearTimeout(clickTimer);
-      }
-      setClickTimer(setTimeout(() => setClickCount(0), 5000));
-      if (clickCount + 1 === 5) {
-        toggleKioskMode();
-      }
+    if (event.clientX > windowWidth - cornerWidth && event.clientY > windowHeight - cornerHeight) {
+      incrementClickCount();
     } else {
-      // Reset count if clicked outside the corner
-      setClickCount(0);
-      if (clickTimer) {
-        clearTimeout(clickTimer);
-      }
+      resetClickCount();
     }
-  }
+  };
 
-  function handleValidatePin(pin) {
+  /**
+   * Increment click count
+   */
+  const incrementClickCount = () => {
+    setClickCount((prev) => prev + 1);
+    if (clickTimer) {
+      clearTimeout(clickTimer);
+    }
+    setClickTimer(setTimeout(() => setClickCount(0), 5000));
+    if (clickCount + 1 === 5) {
+      toggleKioskMode();
+    }
+  };
+
+  /**
+   * Reset click count
+   */
+  const resetClickCount = () => {
+    setClickCount(0);
+    if (clickTimer) {
+      clearTimeout(clickTimer);
+    }
+  };
+ 
+  /**
+   * Handle PIN validation
+   */
+  const handleValidatePin = (pin) => {
     if (pin === "1111") {
       setIsModelOpen(false);
-      if (isKioskMode) {
-        exitFullscreenFn();
-        setIsKioskMode(false);
-      } else {
-        enterFullscreenFn();
-        setIsKioskMode(true);
-      }
+      toggleKioskMode();
+    } else if (pin === "") {
+      setError("PIN cannot be empty");
     } else {
       setError("Invalid PIN");
     }
-  }
+  };
 
-  function toggleKioskMode() {
-    console.log("inside toggleKioskMode");
-    setIsModelOpen(true);
-    setClickCount(0);
-  }
-  function enterFullscreenFn() {
+  /**
+   * Toggle kiosk mode
+   */
+  const toggleKioskMode = () => {
+    if (isKioskMode) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
+    setIsKioskMode(!isKioskMode);
+  };
+
+  /**
+   * Enter fullscreen mode
+   */
+  const enterFullscreen = () => {
     const element = document.documentElement;
-    enterFullscreen(element);
-  }
-  function exitFullscreenFn() {
-    exitFullscreen();
-  }
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      // Safari
+      element.webkitRequestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      // Firefox
+      element.mozRequestFullScreen();
+    } else if (element.msRequestFullscreen) {
+      // IE/Edge
+      element.msRequestFullscreen();
+    }
+  };
+
+  /**
+   * Exit fullscreen mode
+   */
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      // Safari
+      document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      // Firefox
+      document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) {
+      // IE/Edge
+      document.msExitFullscreen();
+    }
+  };
+
+
+  useEffect(() => {
+    window.addEventListener("click", handleEvent);
+    window.addEventListener("touchstart", handleEvent);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      window.removeEventListener("click", handleEvent);
+      window.removeEventListener("touchstart", handleEvent);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [clickCount, clickTimer, isKioskMode]);
+
 
   return {
     isKioskMode,
-    exitKioskMode: exitFullscreenFn,
-    enterKioskMode: enterFullscreenFn,
+    toggleKioskMode,
     modalProps:{
       isOpen: isModelOpen,
       onClose: () => setIsModelOpen(false),

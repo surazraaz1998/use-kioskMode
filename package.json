@@ -1,7 +1,8 @@
 {
   "name": "use-kioskmode",
   "version": "1.0.0",
-  "description": "A npm package to implement kiosk mode in a web app.",
+  "description": "A React hook for entering and exiting kiosk mode with PIN validation.",
+  "readme": "README.md",
   "main": "useKioskMode.js",
   "type": "module",
   "scripts": {
