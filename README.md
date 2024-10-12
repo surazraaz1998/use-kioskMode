@@ -52,9 +52,30 @@ function App() {
   );
 }
 ```
+**Configuration**
+--------------
+You can customize the behavior of the `useKioskMode` hook by passing options to the `useKioskMode` function. Here are the available options:
+
+* timeout: The timeout in milliseconds after which the kiosk mode will be exited automatically. Defaults to 5000.
+* pin: The PIN code required to exit kiosk mode. Defaults to "1111".
+
+Here is an example of how to pass options to the `useKioskMode` function:
+
+```javascript
+import React from 'react';
+import useKioskMode from 'react-kiosk-mode-hook';
+
+function App() {
+  const { isKioskMode, toggleKioskMode, modalProps } = useKioskMode({
+    timeout: 10000,
+    pin: "1234",
+  });
+
+  // ...
+}
+```
 **License**
 --------------
+This package is licensed under the MIT License.
 
-MIT
-
-**Free Software, Hell Yeah!**
+**Free Package, Ofcourse!**
