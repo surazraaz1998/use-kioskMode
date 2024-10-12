@@ -22,3 +22,39 @@ This package provides a React hook, `useKioskMode`, that allows you to enter and
 To install the package, run the following command:
 ```bash
 npm install react-kiosk-mode-hook
+```
+**Usage**
+-----
+
+Here is an example of how to use the `useKioskMode` hook:
+
+```javascript
+import React from 'react';
+import useKioskMode from 'react-kiosk-mode-hook';
+
+function App() {
+  const { isKioskMode, toggleKioskMode, modalProps } = useKioskMode();
+
+  return (
+    <div>
+      {isKioskMode ? (
+        <button onClick={toggleKioskMode}>Exit Kiosk Mode</button>
+      ) : (
+        <button onClick={toggleKioskMode}>Enter Kiosk Mode</button>
+      )}
+      {modalProps.isOpen && (
+        <Modal {...modalProps}>
+          <input type="password" placeholder="Enter PIN" />
+          <button onClick={modalProps.onValidatePin}>Validate PIN</button>
+        </Modal>
+      )}
+    </div>
+  );
+}
+```
+**License**
+--------------
+
+MIT
+
+**Free Software, Hell Yeah!**
