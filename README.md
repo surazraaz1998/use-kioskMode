@@ -1,4 +1,4 @@
-**react-kiosk-mode-hook**
+**use-kioskmode**
 =====================
 
 A React hook for entering and exiting kiosk mode with PIN validation.
@@ -20,3 +20,5 @@ This package provides a React hook, `useKioskMode`, that allows you to enter and
 --------------
 
 To install the package, run the following command:
+```bash
+npm install react-kiosk-mode-hook
